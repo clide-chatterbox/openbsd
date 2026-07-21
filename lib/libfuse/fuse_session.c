@@ -86,7 +86,7 @@ fuse_session_loop(struct fuse_session *se)
 	struct fuse_chan *ch;
 	char *buf;
 	size_t bufsize;
-	int err;
+	int err = 0;
 
 	if (se == NULL)
 		return (-1);

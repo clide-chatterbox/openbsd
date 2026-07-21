@@ -192,10 +192,8 @@ parse_opt(const struct fuse_opt *o, const char *opt, void *data,
     fuse_opt_proc_t f, struct fuse_args *arg)
 {
 	const char *val;
-	int ret, found;
+	int ret = 0, found = 0;
 	size_t sep;
-
-	found = 0;
 
 	for(; o != NULL && o->templ; o++) {
 		sep = match_opt(o->templ, opt);

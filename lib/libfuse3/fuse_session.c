@@ -169,7 +169,7 @@ int
 fuse_session_loop(struct fuse_session *se)
 {
 	struct fuse_buf buf;
-	int err;
+	int err = 0;
 
 	memset(&buf, 0, sizeof(buf));
 

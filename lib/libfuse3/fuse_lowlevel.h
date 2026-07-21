@@ -170,9 +170,9 @@ void fuse_reply_none(fuse_req_t);
  */
 int fuse_reply_create(fuse_req_t, const struct fuse_entry_param *,
      const struct fuse_file_info *)
-    __attribute__((warning("This function is unsupported on OpenBSD")));
-int fuse_reply_bmap(fuse_req_t, uint64_t);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
+    __warning("This function is unsupported on OpenBSD");
+int fuse_reply_bmap(fuse_req_t, uint64_t)
+    __warning("This function is unsupported on OpenBSD");
 
 /*
  * FUSE Request API Prototypes

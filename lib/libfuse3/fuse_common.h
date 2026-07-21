@@ -116,6 +116,12 @@ struct fuse_bufvec {
 	struct fuse_buf buf[1];
 };
 
+#if defined(__clang__) || __GNUC_PREREQ__(4, 6)
+#define __warning(args)		__attribute__ ((warning( args )))
+#else
+#define __warning(args)		/* delete */
+#endif
+
 /*
  * Unsupported API to configure multi-threaded session loop.
  */
@@ -123,22 +129,22 @@ struct fuse_loop_config {
 	int clone_fd;
 	unsigned int max_threads;
 };
-struct fuse_loop_config *fuse_loop_cfg_create(void);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
-void fuse_loop_cfg_destroy(struct fuse_loop_config *);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
-void fuse_loop_cfg_set_max_threads(struct fuse_loop_config *, unsigned int);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
-void fuse_loop_cfg_set_clone_fd(struct fuse_loop_config *, unsigned int);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
+struct fuse_loop_config *fuse_loop_cfg_create(void)
+    __warning("This function is unsupported on OpenBSD");
+void fuse_loop_cfg_destroy(struct fuse_loop_config *)
+    __warning("This function is unsupported on OpenBSD");
+void fuse_loop_cfg_set_max_threads(struct fuse_loop_config *, unsigned int)
+    __warning("This function is unsupported on OpenBSD");
+void fuse_loop_cfg_set_clone_fd(struct fuse_loop_config *, unsigned int)
+    __warning("This function is unsupported on OpenBSD");
 
 /* Unsupported API to set want_ext field of fuse_conn_info. */
-bool fuse_set_feature_flag(struct fuse_conn_info *, uint64_t);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
-void fuse_unset_feature_flag(struct fuse_conn_info *, uint64_t);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
-bool fuse_get_feature_flag(const struct fuse_conn_info *, uint64_t);
-    __attribute__((warning("This function is unsupported on OpenBSD")));
+bool fuse_set_feature_flag(struct fuse_conn_info *, uint64_t)
+    __warning("This function is unsupported on OpenBSD");
+void fuse_unset_feature_flag(struct fuse_conn_info *, uint64_t)
+    __warning("This function is unsupported on OpenBSD");
+bool fuse_get_feature_flag(const struct fuse_conn_info *, uint64_t)
+    __warning("This function is unsupported on OpenBSD");
 
 #if !defined(FUSE_USE_VERSION) || FUSE_USE_VERSION < 30
 #  error only API version 30 or greater is supported
