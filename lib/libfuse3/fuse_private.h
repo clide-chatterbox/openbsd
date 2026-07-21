@@ -1,0 +1,214 @@
+/* $OpenBSD: fuse_private.h,v 1.29 2026/06/17 13:29:01 helg Exp $ */
+/*
+ * Copyright (c) 2013 Sylvestre Gallon <ccna.syl@gmail.com>
+ *
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+#ifndef _FUSE_SUBR_H_
+#define _FUSE_SUBR_H_
+
+#include <sys/types.h>
+#include <sys/dirent.h>
+#include <sys/mount.h>
+#include <sys/stat.h>
+#include <sys/statvfs.h>
+#include <sys/tree.h>
+#include <sys/fusebuf.h>
+#include <limits.h>
+
+#include "fuse.h"
+#include "fuse_lowlevel.h"
+
+#define LOG_DEBUG(fmt, ...)						\
+	do {								\
+		fuse_log(FUSE_LOG_DEBUG, fmt, ##__VA_ARGS__);		\
+	} while(0)
+#define LOG_WARNING(fmt, ...)						\
+	do {								\
+		fuse_log(FUSE_LOG_WARNING, fmt, ##__VA_ARGS__);		\
+	} while(0)
+#define LOG_ERR(fmt, ...)						\
+	do {								\
+		fuse_log(FUSE_LOG_ERR, fmt, ##__VA_ARGS__);		\
+	} while(0)
+
+struct fuse_vnode {
+	ino_t ino;
+	struct fuse_vnode *parent;
+	unsigned int ref;
+
+	char path[NAME_MAX + 1];
+
+	SIMPLEQ_ENTRY(fuse_vnode) node; /* for dict */
+};
+
+struct fuse_dirhandle {
+	struct fuse *fuse;
+	void *buf;		/* buffer for dirents */
+	int full;		/* whether the buffer is full*/
+	uint32_t size;		/* buffer size */
+	uint32_t start;		/* start offset */
+	uint32_t idx;		/* current offset */
+	uint32_t len;		/* buffer space used */
+	fuse_ino_t ino;		/* directory inode */
+	uint64_t fh;		/* file handle from opendir */
+};
+
+SIMPLEQ_HEAD(fuse_vn_head, fuse_vnode);
+SPLAY_HEAD(dict, dictentry);
+SPLAY_HEAD(tree, treeentry);
+
+struct fuse_mount_opts {
+	char *fsname;
+	int allow_other;
+	int def_perms;
+	int max_read;
+	int noatime;
+	int rdonly;
+};
+
+struct fuse_session {
+	struct fuse_lowlevel_ops llops;
+	struct fuse_conn_info fci;
+	struct fuse_mount_opts mnt_opts;
+	char *mnt_dir;
+	void *userdata;
+	int init;
+	int exit;
+	int fd;
+	int dead;
+	int debug;
+};
+
+struct fuse {
+	struct fuse_operations	op;
+
+	int			compat;
+
+	struct tree		vnode_tree;
+	struct dict		name_tree;
+	uint64_t		max_ino;
+	void			*private_data;
+
+	struct fuse_config	conf;
+	struct fuse_session	*se;
+};
+
+/* fuse_lowlevel.h */
+struct fuse_req {
+	struct fuse_ctx	ctx;
+	struct fusebuf *fbuf;
+	struct fuse_session *se;
+};
+
+#define	FUSE_MAX_OPS	39
+#define FUSE_ROOT_INO ((ino_t)1)
+
+/* fuse_ops.c */
+fuse_req_t ifuse_req(void);
+
+/* fuse_subr.c */
+struct fuse_vnode *alloc_vn(struct fuse *, const char *, ino_t, ino_t);
+void ref_vn(struct fuse_vnode *);
+void unref_vn(struct fuse *, struct fuse_vnode *, const uint64_t);
+struct fuse_vnode *get_vn_by_name_and_parent(struct fuse *, const char *,
+    ino_t);
+void remove_vnode_from_name_tree(struct fuse *, struct fuse_vnode *);
+int set_vn(struct fuse *, struct fuse_vnode *);
+char *build_realname(struct fuse *, ino_t);
+
+/* tree.c */
+#define tree_init(t)	SPLAY_INIT((t))
+#define tree_empty(t)	SPLAY_EMPTY((t))
+int tree_check(struct tree *, uint64_t);
+void *tree_set(struct tree *, uint64_t, void *);
+void *tree_get(struct tree *, uint64_t);
+void *tree_pop(struct tree *, uint64_t);
+
+/* dict.c */
+int dict_check(struct dict *, const char *);
+void *dict_set(struct dict *, const char *, void *);
+void *dict_get(struct dict *, const char *);
+void *dict_pop(struct dict *, const char *);
+
+#define FUSE_VERSION_PKG_INFO "3.12-OpenBSD"
+#define unused __attribute__ ((unused))
+
+#define	PROTO(x)	__dso_hidden typeof(x) x asm("__"#x)
+#define	DEF(x)		__strong_alias(x, __##x)
+
+PROTO(fuse_daemonize);
+PROTO(fuse_destroy);
+PROTO(fuse_get_context);
+PROTO(fuse_get_session);
+PROTO(fuse_loop);
+PROTO(fuse_loop_mt);
+PROTO(fuse_mount);
+PROTO(fuse_new);
+PROTO(fuse_opt_add_arg);
+PROTO(fuse_opt_add_opt);
+PROTO(fuse_opt_add_opt_escaped);
+PROTO(fuse_opt_free_args);
+PROTO(fuse_opt_insert_arg);
+PROTO(fuse_opt_match);
+PROTO(fuse_opt_parse);
+PROTO(fuse_parse_cmdline);
+PROTO(fuse_remove_signal_handlers);
+PROTO(fuse_set_signal_handlers);
+PROTO(fuse_unmount);
+PROTO(fuse_main);
+PROTO(fuse_version);
+PROTO(fuse_pkgversion);
+
+/* FUSE low-level */
+PROTO(fuse_lowlevel_version);
+PROTO(fuse_lowlevel_help);
+PROTO(fuse_req_ctx);
+PROTO(fuse_req_userdata);
+PROTO(fuse_reply_err);
+PROTO(fuse_reply_buf);
+PROTO(fuse_reply_attr);
+PROTO(fuse_reply_entry);
+PROTO(fuse_reply_open);
+PROTO(fuse_reply_write);
+PROTO(fuse_reply_readlink);
+PROTO(fuse_reply_statfs);
+PROTO(fuse_reply_none);
+PROTO(fuse_add_direntry);
+PROTO(fuse_session_new);
+PROTO(fuse_session_destroy);
+PROTO(fuse_session_exit);
+PROTO(fuse_session_exited);
+PROTO(fuse_session_reset);
+PROTO(fuse_session_fd);
+PROTO(fuse_session_loop);
+PROTO(fuse_session_loop_mt);
+PROTO(fuse_session_mount);
+PROTO(fuse_session_unmount);
+PROTO(fuse_session_receive_buf);
+PROTO(fuse_session_process_buf);
+PROTO(fuse_loop_cfg_create);
+PROTO(fuse_loop_cfg_destroy);
+PROTO(fuse_loop_cfg_set_max_threads);
+PROTO(fuse_loop_cfg_set_clone_fd);
+PROTO(fuse_log);
+
+/* Unsupported */
+PROTO(fuse_reply_create);
+PROTO(fuse_set_feature_flag);
+PROTO(fuse_unset_feature_flag);
+PROTO(fuse_get_feature_flag);
+PROTO(fuse_reply_bmap);
+
+#endif /* _FUSE_SUBR_ */
