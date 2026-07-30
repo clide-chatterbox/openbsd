@@ -31,7 +31,8 @@ static char		*rdata;
 static void
 queue_proc_call(void)
 {
-	ssize_t	n;
+	int	n;
+	ssize_t	msglen;
 
 	if (imsgbuf_flush(&ibuf) == -1) {
 		log_warn("warn: queue-proc: imsgbuf_flush");
@@ -39,11 +40,11 @@ queue_proc_call(void)
 	}
 
 	while (1) {
-		if ((n = imsg_get(&ibuf, &imsg)) == -1) {
+		if ((msglen = imsg_get(&ibuf, &imsg)) == -1) {
 			log_warn("warn: queue-proc: imsg_get");
 			break;
 		}
-		if (n) {
+		if (msglen) {
 			rlen = imsg.hdr.len - IMSG_HEADER_SIZE;
 			rdata = imsg.data;
 

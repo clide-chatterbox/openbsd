@@ -1256,7 +1256,7 @@ set_pollfd(struct pollfd *pfd, struct imsgbuf *i)
 int
 handle_pollfd(struct pollfd *pfd, struct imsgbuf *i)
 {
-	ssize_t n;
+	int n;
 
 	if (i == NULL)
 		return (0);

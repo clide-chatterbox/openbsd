@@ -250,7 +250,8 @@ control_dispatch_imsg(int fd, short event, void *arg)
 	struct control_sock	*cs = (struct control_sock *)arg;
 	struct ctl_conn		*c;
 	struct imsg		 imsg;
-	int			 n, retval;
+	int			 retval;
+	ssize_t		 n;
 
 	if ((c = control_connbyfd(fd)) == NULL) {
 		log_warn("control_dispatch_imsg: fd %d: not found", fd);

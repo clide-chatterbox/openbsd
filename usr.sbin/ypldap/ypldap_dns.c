@@ -133,6 +133,7 @@ dns_dispatch_imsg(int fd, short events, void *p)
 {
 	struct imsg		 imsg;
 	int			 n, cnt;
+	ssize_t			 msglen;
 	char			*name;
 	struct ypldap_addr_list	 hn = TAILQ_HEAD_INITIALIZER(hn);
 	struct ypldap_addr	*h;
@@ -162,9 +163,9 @@ dns_dispatch_imsg(int fd, short events, void *p)
 	}
 
 	for (;;) {
-		if ((n = imsg_get(ibuf, &imsg)) == -1)
+		if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 			fatal("client_dispatch_imsg: imsg_get error");
-		if (n == 0)
+		if (msglen == 0)
 			break;
 
 		switch (imsg.hdr.type) {

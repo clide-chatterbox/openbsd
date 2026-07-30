@@ -356,7 +356,8 @@ module_common_radpkt(struct module_base *base, uint32_t imsg_type, u_int q_id,
 static int
 module_recv_imsg(struct module_base *base)
 {
-	ssize_t		 n;
+	int		 n;
+	ssize_t		 msglen;
 	struct imsg	 imsg;
 
 	if ((n = imsgbuf_read(&base->ibuf)) != 1) {
@@ -366,12 +367,12 @@ module_recv_imsg(struct module_base *base)
 		return (-1);
 	}
 	for (;;) {
-		if ((n = imsg_get(&base->ibuf, &imsg)) == -1) {
+		if ((msglen = imsg_get(&base->ibuf, &imsg)) == -1) {
 			syslog(LOG_ERR, "%s: imsg_get(): %m", __func__);
 			module_stop(base);
 			return (-1);
 		}
-		if (n == 0)
+		if (msglen == 0)
 			break;
 		module_imsg_handler(base, &imsg);
 		imsg_free(&imsg);

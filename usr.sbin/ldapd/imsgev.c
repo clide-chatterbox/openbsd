@@ -107,7 +107,8 @@ imsgev_dispatch(int fd, short ev, void *humppa)
 	struct imsgev	*iev = humppa;
 	struct imsgbuf	*ibuf = &iev->ibuf;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
+	ssize_t		 msglen;
 
 	iev->events = 0;
 
@@ -147,11 +148,11 @@ imsgev_dispatch(int fd, short ev, void *humppa)
 	}
 
 	while (iev->terminate == 0) {
-		if ((n = imsg_get(ibuf, &imsg)) == -1) {
+		if ((msglen = imsg_get(ibuf, &imsg)) == -1) {
 			imsgev_disconnect(iev, IMSGEV_EIMSG);
 			return;
 		}
-		if (n == 0)
+		if (msglen == 0)
 			break;
 		iev->callback(iev, IMSGEV_IMSG, &imsg);
 		imsg_free(&imsg);

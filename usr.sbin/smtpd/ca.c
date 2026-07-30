@@ -255,6 +255,7 @@ rsae_send_imsg(int flen, const unsigned char *from, unsigned char *to,
 	struct imsgbuf	*ibuf;
 	struct imsg	 imsg;
 	int		 n, done = 0;
+	ssize_t		 msglen;
 	const void	*toptr;
 	char		*hash;
 	size_t		 tlen;
@@ -286,9 +287,9 @@ rsae_send_imsg(int flen, const unsigned char *from, unsigned char *to,
 			fatalx("pipe closed");
 
 		while (!done) {
-			if ((n = imsg_get(ibuf, &imsg)) == -1)
+			if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 				fatalx("imsg_get error");
-			if (n == 0)
+			if (msglen == 0)
 				break;
 
 			log_imsg(PROC_DISPATCHER, PROC_CA, &imsg);
@@ -364,6 +365,7 @@ ecdsae_send_enc_imsg(const unsigned char *dgst, int dgst_len,
 	struct imsgbuf	*ibuf;
 	struct imsg	 imsg;
 	int		 n, done = 0;
+	ssize_t		 msglen;
 	const void	*toptr;
 	char		*hash;
 	size_t		 tlen;
@@ -393,9 +395,9 @@ ecdsae_send_enc_imsg(const unsigned char *dgst, int dgst_len,
 		if (n == 0)
 			fatalx("pipe closed");
 		while (!done) {
-			if ((n = imsg_get(ibuf, &imsg)) == -1)
+			if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 				fatalx("imsg_get error");
-			if (n == 0)
+			if (msglen == 0)
 				break;
 
 			log_imsg(PROC_DISPATCHER, PROC_CA, &imsg);

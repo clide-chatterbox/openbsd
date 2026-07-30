@@ -508,7 +508,7 @@ humanize_bytes(double val, char *buf, int lbuf)
 static int
 imsg_wait_command_completion(void)
 {
-	int  n;
+	ssize_t  n;
 
 	if (imsgbuf_flush(&ctl_ibuf) == -1)
 		return (-1);

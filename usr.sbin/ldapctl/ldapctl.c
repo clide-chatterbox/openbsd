@@ -242,7 +242,8 @@ main(int argc, char *argv[])
 {
 	int			 ctl_sock;
 	int			 done = 0, verbose = 0, vlog = 0;
-	ssize_t			 n;
+	int			 n;
+	ssize_t			 msglen;
 	int			 ch;
 	enum action		 action = NONE;
 	const char		*datadir = DATADIR;
@@ -366,9 +367,9 @@ main(int argc, char *argv[])
 			errx(1, "pipe closed");
 
 		while (!done) {
-			if ((n = imsg_get(&ibuf, &imsg)) == -1)
+			if ((msglen = imsg_get(&ibuf, &imsg)) == -1)
 				errx(1, "imsg_get error");
-			if (n == 0)
+			if (msglen == 0)
 				break;
 			switch (imsg.hdr.type) {
 			case IMSG_CTL_STATS:

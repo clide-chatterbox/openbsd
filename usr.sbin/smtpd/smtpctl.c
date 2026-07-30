@@ -175,14 +175,15 @@ srv_send(int msg, const void *data, size_t len)
 static void
 srv_recv(int type)
 {
-	ssize_t	n;
+	int	n;
+	ssize_t	msglen;
 
 	srv_flush();
 
 	while (1) {
-		if ((n = imsg_get(ibuf, &imsg)) == -1)
+		if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 			errx(1, "imsg_get error");
-		if (n) {
+		if (msglen) {
 			if (imsg.hdr.type == IMSG_CTL_FAIL &&
 			    imsg.hdr.peerid != 0 &&
 			    imsg.hdr.peerid != IMSG_VERSION)

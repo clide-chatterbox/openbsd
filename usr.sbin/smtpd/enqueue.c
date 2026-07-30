@@ -801,6 +801,7 @@ open_connection(void)
 	struct imsg	imsg;
 	int		fd;
 	int		n;
+	ssize_t		msglen;
 
 	imsg_compose(ibuf, IMSG_CTL_SMTP_SESSION, IMSG_VERSION, 0, -1, NULL, 0);
 
@@ -813,9 +814,9 @@ open_connection(void)
 		if (n == 0)
 			errx(1, "pipe closed");
 
-		if ((n = imsg_get(ibuf, &imsg)) == -1)
+		if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 			errx(1, "imsg_get error");
-		if (n == 0)
+		if (msglen == 0)
 			continue;
 
 		switch (imsg.hdr.type) {
