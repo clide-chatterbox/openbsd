@@ -171,7 +171,7 @@ rde_dispatch_imsg(int fd, short event, void *bula)
 	struct rde_nbr		*nbr;
 	struct rde_nbr		 new;
 	struct rinfo		 rinfo;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose;
 
 	ibuf = &iev->ibuf;
@@ -310,7 +310,7 @@ rde_dispatch_parent(int fd, short event, void *bula)
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf;
 	struct kif		*kif;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 
 	ibuf = &iev->ibuf;

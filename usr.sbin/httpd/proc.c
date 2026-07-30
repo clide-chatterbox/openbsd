@@ -580,7 +580,7 @@ proc_dispatch(int fd, short event, void *arg)
 	struct privsep		*ps = p->p_ps;
 	struct imsgbuf		*ibuf;
 	struct imsg		 imsg;
-	ssize_t			 n;
+	int			 n;
 	int			 ver;
 	const char		*title;
 	struct privsep_fd	 pf;

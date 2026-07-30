@@ -204,7 +204,7 @@ control_dispatch_msg(struct pollfd *pfd, u_int *ctl_cnt)
 	struct ctl_show_peer	 c_peer;
 	struct ctl_show_sensor	 c_sensor;
 	int			 cnt;
-	ssize_t			 n;
+	int			 n;
 
 	if ((c = control_connbyfd(pfd->fd)) == NULL) {
 		log_warn("control_dispatch_msg: fd %d: not found", pfd->fd);

@@ -455,7 +455,7 @@ vmm_dispatch_vm(int fd, short event, void *arg)
 	struct imsgev		*iev = &vm->vm_iev;
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct imsg		 imsg;
-	ssize_t			 n;
+	int			 n;
 	unsigned int		 i;
 	uint32_t		 type;
 

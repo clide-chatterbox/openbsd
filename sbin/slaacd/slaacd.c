@@ -390,7 +390,7 @@ main_dispatch_frontend(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf;
 	struct imsg		 imsg;
 	struct imsg_ifinfo	 imsg_ifinfo;
-	ssize_t			 n;
+	int			 n;
 	uint32_t		 type;
 	int			 shut = 0;
 	int			 rdomain;
@@ -474,7 +474,7 @@ main_dispatch_engine(int fd, short event, void *bula)
 	struct imsg_configure_address	 address;
 	struct imsg_configure_dfr	 dfr;
 	struct imsg_propose_rdns	 rdns;
-	ssize_t				 n;
+	int				 n;
 	uint32_t			 type;
 	int				 shut = 0;
 

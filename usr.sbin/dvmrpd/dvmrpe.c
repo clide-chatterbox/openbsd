@@ -239,7 +239,7 @@ dvmrpe_dispatch_main(int fd, short event, void *bula)
 	struct imsgbuf  *ibuf = &iev->ibuf;
 	struct kif	*kif;
 	struct iface	*iface;
-	ssize_t		 n;
+	int		 n;
 	int		 shut = 0, link_ok;
 
 	if (event & EV_READ) {
@@ -315,7 +315,7 @@ dvmrpe_dispatch_rde(int fd, short event, void *bula)
 	struct prune		 p;
 	struct iface		*iface;
 	struct route_report	*rr;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 
 	if (event & EV_READ) {

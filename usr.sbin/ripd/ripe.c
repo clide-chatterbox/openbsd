@@ -229,7 +229,7 @@ ripe_dispatch_main(int fd, short event, void *bula)
 	struct imsgbuf	*ibuf = &iev->ibuf;
 	struct kif	*kif;
 	struct iface	*iface;
-	ssize_t		 n;
+	int		 n;
 	int		 link_ok, shut = 0;
 
 	if (event & EV_READ) {
@@ -310,7 +310,7 @@ ripe_dispatch_rde(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct iface		*iface;
 	struct nbr		*nbr;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 
 	if (event & EV_READ) {

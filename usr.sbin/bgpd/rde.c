@@ -464,7 +464,7 @@ rde_dispatch_imsg_session(struct imsgbuf *imsgbuf)
 	struct rde_aspath	*asp;
 	struct as_set		*aset;
 	struct rde_prefixset	*pset;
-	ssize_t			 n;
+	int			 n;
 	uint32_t		 peerid;
 	pid_t			 pid;
 	int			 verbose;

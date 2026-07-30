@@ -847,7 +847,7 @@ dispatch_imsg(struct imsgbuf *imsgbuf, int idx, struct bgpd_config *conf)
 	struct pftable_msg	 pfmsg;
 	struct demote_msg	 demote;
 	char			 reason[REASON_LEN], ifname[IFNAMSIZ];
-	ssize_t			 n;
+	int			 n;
 	u_int			 rtableid;
 	int			 rv, verbose;
 

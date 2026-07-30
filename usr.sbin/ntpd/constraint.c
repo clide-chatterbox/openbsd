@@ -628,7 +628,7 @@ priv_constraint_dispatch(struct pollfd *pfd)
 {
 	struct imsg		 imsg;
 	struct constraint	*cstr;
-	ssize_t			 n;
+	int			 n;
 	struct timeval		 tv[2];
 
 	if ((cstr = constraint_byfd(pfd->fd)) == NULL)

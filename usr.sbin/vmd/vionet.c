@@ -841,7 +841,7 @@ dev_dispatch_vm(int fd, short event, void *arg)
 	struct imsgev		*iev = &dev->async_iev;
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct imsg	 	 imsg;
-	ssize_t			 n = 0;
+	int			 n = 0;
 	int			 verbose;
 	uint32_t		 type;
 
@@ -917,7 +917,7 @@ handle_sync_io(int fd, short event, void *arg)
 	struct imsgbuf *ibuf = &iev->ibuf;
 	struct viodev_msg msg;
 	struct imsg imsg;
-	ssize_t n;
+	int n;
 	int deassert = 0;
 
 	if (event & EV_READ) {

@@ -195,7 +195,7 @@ rde_dispatch_imsg(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct rip_route	 rr;
 	struct imsg		 imsg;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose;
 
 	if (event & EV_READ) {
@@ -298,7 +298,7 @@ rde_dispatch_parent(int fd, short event, void *bula)
 	struct kroute		 kr;
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf = &iev->ibuf;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 
 	if (event & EV_READ) {

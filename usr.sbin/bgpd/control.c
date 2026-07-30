@@ -246,7 +246,7 @@ control_dispatch_msg(struct pollfd *pfd, struct peer_head *peers)
 	struct ctl_show_rib_request	ribreq;
 	struct ctl_conn		*c;
 	struct peer		*p;
-	ssize_t			 n;
+	int			 n;
 	uint32_t		 type;
 	pid_t			 pid;
 	int			 verbose, matched;

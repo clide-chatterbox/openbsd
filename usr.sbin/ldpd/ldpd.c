@@ -379,7 +379,7 @@ main_dispatch_ldpe(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct imsg		 imsg;
 	int			 af;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose;
 
 	if (event & EV_READ) {
@@ -459,7 +459,7 @@ main_dispatch_lde(int fd, short event, void *bula)
 	struct imsgev	*iev = bula;
 	struct imsgbuf	*ibuf = &iev->ibuf;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
 	int		 shut = 0;
 
 	if (event & EV_READ) {

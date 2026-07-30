@@ -242,7 +242,7 @@ frontend_dispatch_main(int fd, short event, void *bula)
 	struct imsgev			*iev = bula;
 	struct imsgbuf			*ibuf = &iev->ibuf;
 	struct iface			*iface;
-	ssize_t				 n;
+	int				 n;
 	uint32_t			 type;
 	int				 shut = 0, bpfsock, if_index, udpsock;
 
@@ -493,7 +493,7 @@ frontend_dispatch_engine(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct imsg		 imsg;
 	struct iface		*iface;
-	ssize_t			 n;
+	int			 n;
 	uint32_t		 type;
 	int			 shut = 0;
 

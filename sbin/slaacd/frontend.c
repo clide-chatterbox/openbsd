@@ -283,7 +283,7 @@ frontend_dispatch_main(int fd, short event, void *bula)
 	struct imsg		 imsg;
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf = &iev->ibuf;
-	ssize_t			 n;
+	int			 n;
 	uint32_t		 type;
 	int			 shut = 0, icmp6sock, rdomain;
 
@@ -396,7 +396,7 @@ frontend_dispatch_engine(int fd, short event, void *bula)
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct imsg		 imsg;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 	uint32_t		 if_index, type;
 
