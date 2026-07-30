@@ -438,7 +438,7 @@ main_dispatch_frontend(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf;
 	struct imsg		 imsg;
 	struct imsg_ifinfo	 imsg_ifinfo;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 	uint32_t		 if_index, type;
 #ifndef	SMALL
@@ -523,7 +523,7 @@ main_dispatch_engine(int fd, short event, void *bula)
 	struct imsgev			*iev = bula;
 	struct imsgbuf			*ibuf;
 	struct imsg			 imsg;
-	ssize_t				 n;
+	int				 n;
 	uint32_t			 type;
 	int				 shut = 0;
 

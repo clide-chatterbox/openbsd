@@ -314,7 +314,7 @@ main_dispatch_dvmrpe(int fd, short event, void *bula)
 	struct imsgev	*iev = bula;
 	struct imsgbuf  *ibuf = &iev->ibuf;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
 	int		 shut = 0, verbose;
 
 	if (event & EV_READ) {
@@ -377,7 +377,7 @@ main_dispatch_rde(int fd, short event, void *bula)
 	struct imsgev	*iev = bula;
 	struct imsgbuf  *ibuf = &iev->ibuf;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
 	int		 shut = 0;
 
 	if (event & EV_READ) {

@@ -490,7 +490,7 @@ resolver_dispatch_frontend(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf;
 	struct imsg		 imsg;
 	struct query_imsg	*query_imsg;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose, i, new_available_afs;
 	char			*ta;
 
@@ -632,7 +632,7 @@ resolver_dispatch_main(int fd, short event, void *bula)
 	struct imsg		 imsg;
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, i, *restart;
 
 	ibuf = &iev->ibuf;

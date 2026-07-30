@@ -130,6 +130,7 @@ client_dispatch_dns(int fd, short events, void *p)
 	u_char			*data;
 	struct ypldap_addr	*h;
 	int			 n, wait_cnt = 0;
+	ssize_t			 msglen;
 	struct idm		*idm;
 	int			 shut = 0;
 
@@ -156,9 +157,9 @@ client_dispatch_dns(int fd, short events, void *p)
 	}
 
 	for (;;) {
-		if ((n = imsg_get(ibuf, &imsg)) == -1)
+		if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 			fatal("client_dispatch_dns: imsg_get error");
-		if (n == 0)
+		if (msglen == 0)
 			break;
 
 		switch (imsg.hdr.type) {
@@ -231,6 +232,7 @@ void
 client_dispatch_parent(int fd, short events, void *p)
 {
 	int			 n;
+	ssize_t			 msglen;
 	int			 shut = 0;
 	struct imsg		 imsg;
 	struct env		*env = p;
@@ -256,9 +258,9 @@ client_dispatch_parent(int fd, short events, void *p)
 	}
 
 	for (;;) {
-		if ((n = imsg_get(ibuf, &imsg)) == -1)
+		if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 			fatal("client_dispatch_parent: imsg_get error");
-		if (n == 0)
+		if (msglen == 0)
 			break;
 
 		switch (imsg.hdr.type) {

@@ -134,7 +134,8 @@ mproc_dispatch(int fd, short event, void *arg)
 {
 	struct mproc	*p = arg;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
+	ssize_t		 msglen;
 
 	p->events = 0;
 
@@ -178,7 +179,7 @@ mproc_dispatch(int fd, short event, void *arg)
 	}
 
 	for (;;) {
-		if ((n = imsg_get(&p->imsgbuf, &imsg)) == -1) {
+		if ((msglen = imsg_get(&p->imsgbuf, &imsg)) == -1) {
 
 			if (smtpd_process == PROC_CONTROL &&
 			    p->proc == PROC_CLIENT) {
@@ -191,7 +192,7 @@ mproc_dispatch(int fd, short event, void *arg)
 			    proc_name(smtpd_process),  p->name);
 			fatalx(NULL);
 		}
-		if (n == 0)
+		if (msglen == 0)
 			break;
 
 		p->handler(p, &imsg);

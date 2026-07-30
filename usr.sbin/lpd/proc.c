@@ -277,7 +277,8 @@ proc_dispatch(int fd, short event, void *arg)
 {
 	struct imsgproc	*p = arg;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
+	ssize_t		 msglen;
 
 	p->events = 0;
 
@@ -307,12 +308,12 @@ proc_dispatch(int fd, short event, void *arg)
 	}
 
 	for (;;) {
-		if ((n = imsg_get(&p->imsgbuf, &imsg)) == -1) {
+		if ((msglen = imsg_get(&p->imsgbuf, &imsg)) == -1) {
 			log_warn("%s: imsg_get", __func__);
 			proc_callback(p, NULL);
 			return;
 		}
-		if (n == 0)
+		if (msglen == 0)
 			break;
 
 		proc_callback(p, &imsg);

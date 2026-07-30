@@ -287,7 +287,7 @@ engine_dispatch_frontend(int fd, short event, void *bula)
 	struct imsgbuf			*ibuf = &iev->ibuf;
 	struct imsg			 imsg;
 	struct dhcpleased_iface		*iface;
-	ssize_t				 n;
+	int				 n;
 	int				 shut = 0;
 #ifndef	SMALL
 	int				 verbose;
@@ -410,7 +410,7 @@ engine_dispatch_main(int fd, short event, void *bula)
 	struct imsgev			*iev = bula;
 	struct imsgbuf			*ibuf = &iev->ibuf;
 	struct imsg_ifinfo		 imsg_ifinfo;
-	ssize_t				 n;
+	int				 n;
 	uint32_t			 type;
 	int				 shut = 0;
 

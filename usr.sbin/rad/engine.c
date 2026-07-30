@@ -189,7 +189,7 @@ engine_dispatch_frontend(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf;
 	struct imsg		 imsg;
 	struct imsg_ra_rs	 ra_rs;
-	ssize_t			 n;
+	int			 n;
 	uint32_t		 if_index;
 	int			 shut = 0, verbose;
 
@@ -274,7 +274,7 @@ engine_dispatch_main(int fd, short event, void *bula)
 	struct ra_rdnss_conf		*ra_rdnss_conf;
 	struct ra_dnssl_conf		*ra_dnssl_conf;
 	struct ra_pref64_conf		*pref64;
-	ssize_t				 n;
+	int				 n;
 	int				 shut = 0;
 
 	ibuf = &iev->ibuf;

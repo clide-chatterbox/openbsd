@@ -312,7 +312,7 @@ vm_dispatch_vmm(int fd, short event, void *arg)
 	struct imsg		 imsg;
 	uint32_t		 id, type;
 	pid_t			 pid;
-	ssize_t			 n;
+	int			 n;
 	int			 verbose;
 
 	if (event & EV_READ) {

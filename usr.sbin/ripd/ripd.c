@@ -312,7 +312,7 @@ main_dispatch_ripe(int fd, short event, void *bula)
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct imsg		 imsg;
 	struct demote_msg	 dmsg;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose;
 
 	if (event & EV_READ) {
@@ -391,7 +391,7 @@ main_dispatch_rde(int fd, short event, void *bula)
 	struct imsgev	*iev = bula;
 	struct imsgbuf	*ibuf = &iev->ibuf;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
 	int		 shut = 0;
 
 	if (event & EV_READ) {

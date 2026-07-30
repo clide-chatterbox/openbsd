@@ -204,7 +204,7 @@ rde_dispatch_imsg(int fd, short event, void *bula)
 	struct route_report	 rr;
 	struct nbr_msg		 nm;
 	int			 i, connected = 0, shut = 0, verbose;
-	ssize_t			 n;
+	int			 n;
 	struct iface		*iface;
 
 	if (event & EV_READ) {

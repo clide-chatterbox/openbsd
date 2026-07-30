@@ -260,7 +260,7 @@ rde_dispatch_imsg(int fd, short event, void *bula)
 	struct in_addr		 addr;
 	struct vertex		*v;
 	char			*buf;
-	ssize_t			 n;
+	int			 n;
 	time_t			 now;
 	int			 r, state, self, error, shut = 0, verbose;
 	u_int16_t		 l;
@@ -648,7 +648,7 @@ rde_dispatch_parent(int fd, short event, void *bula)
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf;
 	struct redistribute	*nred;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 
 	ibuf = &iev->ibuf;

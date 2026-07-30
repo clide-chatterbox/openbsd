@@ -350,6 +350,7 @@ void
 main_dispatch_client(int fd, short events, void *p)
 {
 	int		 n;
+	ssize_t		 msglen;
 	int		 shut = 0;
 	struct env	*env = p;
 	struct imsgev	*iev = env->sc_iev;
@@ -376,9 +377,9 @@ main_dispatch_client(int fd, short events, void *p)
 	}
 
 	for (;;) {
-		if ((n = imsg_get(ibuf, &imsg)) == -1)
+		if ((msglen = imsg_get(ibuf, &imsg)) == -1)
 			fatal("main_dispatch_client: imsg_get error");
-		if (n == 0)
+		if (msglen == 0)
 			break;
 
 		switch (imsg.hdr.type) {

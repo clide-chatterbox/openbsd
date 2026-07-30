@@ -1767,7 +1767,7 @@ virtio_dispatch_dev(int fd, short event, void *arg)
 	struct imsgbuf		*ibuf = &iev->ibuf;
 	struct imsg		 imsg;
 	struct viodev_msg	 msg;
-	ssize_t			 n = 0;
+	int			 n = 0;
 	uint32_t		 type;
 
 	if (event & EV_READ) {

@@ -371,7 +371,7 @@ main_dispatch_eigrpe(int fd, short event, void *bula)
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf;
 	struct imsg		 imsg;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose;
 
 	ibuf = &iev->ibuf;
@@ -450,7 +450,7 @@ main_dispatch_rde(int fd, short event, void *bula)
 	struct imsgev	*iev = bula;
 	struct imsgbuf  *ibuf;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
 	int		 shut = 0;
 
 	ibuf = &iev->ibuf;

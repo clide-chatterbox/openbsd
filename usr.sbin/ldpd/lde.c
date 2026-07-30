@@ -196,7 +196,7 @@ lde_dispatch_imsg(int fd, short event, void *bula)
 	struct map		 map;
 	struct lde_addr		 lde_addr;
 	struct notify_msg	 nm;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose;
 
 	if (event & EV_READ) {
@@ -392,7 +392,7 @@ lde_dispatch_parent(int fd, short event, void *bula)
 	struct kroute		 kr;
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf = &iev->ibuf;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0;
 	struct fec		 fec;
 

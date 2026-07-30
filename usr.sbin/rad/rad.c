@@ -378,7 +378,7 @@ main_dispatch_frontend(int fd, short event, void *bula)
 	struct imsgev		*iev = bula;
 	struct imsgbuf		*ibuf;
 	struct imsg		 imsg;
-	ssize_t			 n;
+	int			 n;
 	int			 shut = 0, verbose;
 	int			 rdomain;
 
@@ -449,7 +449,7 @@ main_dispatch_engine(int fd, short event, void *bula)
 	struct imsgev	*iev = bula;
 	struct imsgbuf  *ibuf;
 	struct imsg	 imsg;
-	ssize_t		 n;
+	int		 n;
 	int		 shut = 0;
 
 	ibuf = &iev->ibuf;
