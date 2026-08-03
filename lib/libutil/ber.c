@@ -589,9 +589,23 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 	void			*p;
 	struct ber_oid		*o;
 	struct ber_element	*parent[_MAX_SEQ], *e;
-	struct ber_element	*origber = ber, *firstber = NULL;
+	struct ber_element	**firstber;
 
 	memset(parent, 0, sizeof(struct ber_element *) * _MAX_SEQ);
+
+	if (ber != NULL) {
+		if ((ber->be_encoding == BER_TYPE_SEQUENCE ||
+		    ber->be_encoding == BER_TYPE_SET) &&
+		    ber->be_sub == NULL) {
+			firstber = &ber->be_sub;
+		} else if (ber->be_next == NULL) {
+			firstber = &ber->be_next;
+		} else {
+			errno = EINVAL;
+			return (NULL);	/* bad invocation */
+		}
+	} else
+		firstber = &ber;
 
 	va_start(ap, fmt);
 	
@@ -615,6 +629,7 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 			break;
 		case 'e':
 			e = va_arg(ap, struct ber_element *);
+			/* XXX ownership issue here */
 			ober_link_elements(ber, e);
 			break;
 		case 'E':
@@ -646,7 +661,7 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 			class = va_arg(ap, int);
 			type = va_arg(ap, unsigned int);
 			ober_set_header(ber, class, type);
-			break;
+			continue;
 		case 'x':
 			s = va_arg(ap, char *);
 			len = va_arg(ap, size_t);
@@ -676,25 +691,22 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 			if (level <= 0 || parent[level - 1] == NULL)
 				goto fail;
 			ber = parent[--level];
-			break;
+			continue;
 		case '.':
-			if ((e = ober_add_eoc(ber)) == NULL)
+			if ((ber = ober_add_eoc(ber)) == NULL)
 				goto fail;
-			ber = e;
 			break;
 		default:
-			break;
+			/* XXX why not fail? */
+			continue;
 		}
-		if (firstber == NULL)
-			firstber = ber;
 	}
 	va_end(ap);
 
 	return (ber);
  fail:
-	if (origber != NULL)
-		ober_unlink_elements(origber);
-	ober_free_elements(firstber);
+	ober_free_elements(*firstber);
+	*firstber = NULL;
 	return (NULL);
 }
 
