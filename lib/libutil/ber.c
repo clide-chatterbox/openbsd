@@ -578,7 +578,7 @@ ober_get_oid(struct ber_element *elm, struct ber_oid *o)
 
 #define _MAX_SEQ		 128
 struct ber_element *
-ober_printf_elements(struct ber_element *ber, char *fmt, ...)
+ober_printf_elements(struct ber_element *prev, char *fmt, ...)
 {
 	va_list			 ap;
 	int			 d, class, level = 0;
@@ -589,23 +589,9 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 	void			*p;
 	struct ber_oid		*o;
 	struct ber_element	*parent[_MAX_SEQ], *e;
-	struct ber_element	**firstber;
+	struct ber_element	*firstber = NULL, *ber = NULL;
 
 	memset(parent, 0, sizeof(struct ber_element *) * _MAX_SEQ);
-
-	if (ber != NULL) {
-		if ((ber->be_encoding == BER_TYPE_SEQUENCE ||
-		    ber->be_encoding == BER_TYPE_SET) &&
-		    ber->be_sub == NULL) {
-			firstber = &ber->be_sub;
-		} else if (ber->be_next == NULL) {
-			firstber = &ber->be_next;
-		} else {
-			errno = EINVAL;
-			return (NULL);	/* bad invocation */
-		}
-	} else
-		firstber = &ber;
 
 	va_start(ap, fmt);
 	
@@ -631,6 +617,7 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 			e = va_arg(ap, struct ber_element *);
 			/* XXX ownership issue here */
 			ober_link_elements(ber, e);
+			ber = e;
 			break;
 		case 'E':
 			i = va_arg(ap, long long);
@@ -660,8 +647,12 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 		case 't':
 			class = va_arg(ap, int);
 			type = va_arg(ap, unsigned int);
-			ober_set_header(ber, class, type);
-			continue;
+			/* handle the case where 't' is first format */
+			if (ber == NULL)
+				ober_set_header(prev, class, type);
+			else
+				ober_set_header(ber, class, type);
+			break;
 		case 'x':
 			s = va_arg(ap, char *);
 			len = va_arg(ap, size_t);
@@ -675,7 +666,7 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 		case '{':
 			if (level >= _MAX_SEQ-1)
 				goto fail;
-			if ((ber= ober_add_sequence(ber)) == NULL)
+			if ((ber = ober_add_sequence(ber)) == NULL)
 				goto fail;
 			parent[level++] = ber;
 			break;
@@ -691,22 +682,29 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 			if (level <= 0 || parent[level - 1] == NULL)
 				goto fail;
 			ber = parent[--level];
-			continue;
+			break;
 		case '.':
 			if ((ber = ober_add_eoc(ber)) == NULL)
 				goto fail;
 			break;
 		default:
-			/* XXX why not fail? */
-			continue;
+			errno = EINVAL;
+			goto fail;
 		}
+		if (firstber == NULL)
+			firstber = ber;
 	}
 	va_end(ap);
 
+	ober_link_elements(prev, firstber);
+	/* always return the first element if prev is NULL */
+	if (prev == NULL)
+		ber = firstber;
+
 	return (ber);
  fail:
-	ober_free_elements(*firstber);
-	*firstber = NULL;
+	va_end(ap);
+	ober_free_elements(firstber);
 	return (NULL);
 }
 
