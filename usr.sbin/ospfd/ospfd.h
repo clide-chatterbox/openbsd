@@ -29,7 +29,7 @@
 #include <netinet/in.h>
 #include <event.h>
 
-#include <imsg.h>
+#include "imsgev.h"
 #include "ospf.h"
 #include "log.h"
 
@@ -65,14 +65,6 @@ static const char * const log_procnames[] = {
 	"parent",
 	"ospfe",
 	"rde"
-};
-
-struct imsgev {
-	struct imsgbuf		 ibuf;
-	void			(*handler)(int, short, void *);
-	struct event		 ev;
-	void			*data;
-	short			 events;
 };
 
 enum imsg_type {
@@ -580,8 +572,8 @@ u_int16_t	 iso_cksum(void *, u_int16_t, u_int16_t);
 int		 kif_init(void);
 void		 kif_clear(void);
 int		 kr_init(int, u_int, int, u_int8_t);
-int		 kr_change(struct kroute *, int);
-int		 kr_delete(struct kroute *);
+int		 kr_change(struct imsg *);
+int		 kr_delete(struct imsg *);
 void		 kr_shutdown(void);
 void		 kr_fib_couple(void);
 void		 kr_fib_decouple(void);
@@ -614,14 +606,12 @@ u_int16_t	 rtlabel_tag2id(u_int32_t);
 void		 rtlabel_tag(u_int16_t, u_int32_t);
 
 /* ospfd.c */
+void	ospfd_dispatch_error(struct imsgbuf *, void *, short, int);
 void	main_imsg_compose_ospfe(int, pid_t, void *, u_int16_t);
 void	main_imsg_compose_ospfe_fd(int, pid_t, int);
 void	main_imsg_compose_rde(int, pid_t, void *, u_int16_t);
 int	ospf_redistribute(struct kroute *, u_int32_t *);
 void	merge_config(struct ospfd_conf *, struct ospfd_conf *);
-void	imsg_event_add(struct imsgev *);
-int	imsg_compose_event(struct imsgev *, u_int16_t, u_int32_t,
-	    pid_t, int, void *, u_int16_t);
 int	ifstate_is_up(struct kif *kif);
 struct iface
 	*iface_txsan(const struct iface *);

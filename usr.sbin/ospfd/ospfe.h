@@ -102,7 +102,7 @@ int		 auth_gen(struct ibuf *, struct iface *);
 void		 md_list_add(struct auth_md_head *, u_int8_t, char *);
 void		 md_list_copy(struct auth_md_head *, struct auth_md_head *);
 void		 md_list_clr(struct auth_md_head *);
-int		 md_list_send(struct auth_md_head *, struct imsgev *);
+int		 md_list_send(struct auth_md_head *, struct imsgbuf *);
 
 /* database.c */
 int	 send_db_description(struct nbr *);
@@ -120,11 +120,11 @@ void	 recv_hello(struct iface *,  struct in_addr, u_int32_t,
 
 /* ospfe.c */
 pid_t		 ospfe(struct ospfd_conf *, int[2], int[2], int[2]);
-void		 ospfe_dispatch_main(int, short, void *);
-void		 ospfe_dispatch_rde(int, short, void *);
 int		 ospfe_imsg_compose_parent(int, pid_t, void *, u_int16_t);
 int		 ospfe_imsg_compose_rde(int, u_int32_t, pid_t, void *,
 		     u_int16_t);
+int		 ospfe_imsg_forward_parent(struct imsg *);
+int		 ospfe_imsg_forward_rde(struct imsg *);
 u_int32_t	 ospfe_router_id(void);
 void		 ospfe_fib_update(int);
 void		 ospfe_iface_ctl(struct ctl_conn *, unsigned int);
@@ -180,11 +180,10 @@ void	 start_ls_req_tx_timer(struct nbr *);
 void	 stop_ls_req_tx_timer(struct nbr *);
 
 /* lsupdate.c */
-int		 lsa_flood(struct iface *, struct nbr *, struct lsa_hdr *,
-		     void *);
+int		 lsa_flood(struct iface *, struct nbr *, struct lsa_ref *);
 void		 recv_ls_update(struct nbr *, char *, u_int16_t);
 
-void		 ls_retrans_list_add(struct nbr *, struct lsa_hdr *,
+void		 ls_retrans_list_add(struct nbr *, struct lsa_ref *,
 		     unsigned short, unsigned short);
 int		 ls_retrans_list_del(struct nbr *, struct lsa_hdr *);
 struct lsa_entry	*ls_retrans_list_get(struct nbr *, struct lsa_hdr *);
@@ -193,8 +192,7 @@ void		 ls_retrans_list_clr(struct nbr *);
 void		 ls_retrans_timer(int, short, void *);
 
 void		 lsa_cache_init(u_int32_t);
-struct lsa_ref	*lsa_cache_add(void *, u_int16_t);
-struct lsa_ref	*lsa_cache_get(struct lsa_hdr *);
+struct lsa_ref	*lsa_cache_add(struct ibuf *);
 void		 lsa_cache_put(struct lsa_ref *, struct nbr *);
 
 /* neighbor.c */
