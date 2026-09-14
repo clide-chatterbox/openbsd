@@ -578,7 +578,7 @@ ober_get_oid(struct ber_element *elm, struct ber_oid *o)
 
 #define _MAX_SEQ		 128
 struct ber_element *
-ober_printf_elements(struct ber_element *ber, char *fmt, ...)
+ober_printf_elements(struct ber_element *prev, char *fmt, ...)
 {
 	va_list			 ap;
 	int			 d, class, level = 0;
@@ -589,7 +589,7 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 	void			*p;
 	struct ber_oid		*o;
 	struct ber_element	*parent[_MAX_SEQ], *e;
-	struct ber_element	*origber = ber, *firstber = NULL;
+	struct ber_element	*firstber = NULL, *ber = NULL;
 
 	memset(parent, 0, sizeof(struct ber_element *) * _MAX_SEQ);
 
@@ -615,7 +615,9 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 			break;
 		case 'e':
 			e = va_arg(ap, struct ber_element *);
+			/* XXX ownership issue here */
 			ober_link_elements(ber, e);
+			ber = e;
 			break;
 		case 'E':
 			i = va_arg(ap, long long);
@@ -645,7 +647,11 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 		case 't':
 			class = va_arg(ap, int);
 			type = va_arg(ap, unsigned int);
-			ober_set_header(ber, class, type);
+			/* handle the case where 't' is first format */
+			if (ber == NULL)
+				ober_set_header(prev, class, type);
+			else
+				ober_set_header(ber, class, type);
 			break;
 		case 'x':
 			s = va_arg(ap, char *);
@@ -660,7 +666,7 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 		case '{':
 			if (level >= _MAX_SEQ-1)
 				goto fail;
-			if ((ber= ober_add_sequence(ber)) == NULL)
+			if ((ber = ober_add_sequence(ber)) == NULL)
 				goto fail;
 			parent[level++] = ber;
 			break;
@@ -678,22 +684,26 @@ ober_printf_elements(struct ber_element *ber, char *fmt, ...)
 			ber = parent[--level];
 			break;
 		case '.':
-			if ((e = ober_add_eoc(ber)) == NULL)
+			if ((ber = ober_add_eoc(ber)) == NULL)
 				goto fail;
-			ber = e;
 			break;
 		default:
-			break;
+			errno = EINVAL;
+			goto fail;
 		}
 		if (firstber == NULL)
 			firstber = ber;
 	}
 	va_end(ap);
 
+	ober_link_elements(prev, firstber);
+	/* always return the first element if prev is NULL */
+	if (prev == NULL)
+		ber = firstber;
+
 	return (ber);
  fail:
-	if (origber != NULL)
-		ober_unlink_elements(origber);
+	va_end(ap);
 	ober_free_elements(firstber);
 	return (NULL);
 }
