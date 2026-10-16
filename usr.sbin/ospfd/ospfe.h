@@ -102,7 +102,7 @@ int		 auth_gen(struct ibuf *, struct iface *);
 void		 md_list_add(struct auth_md_head *, u_int8_t, char *);
 void		 md_list_copy(struct auth_md_head *, struct auth_md_head *);
 void		 md_list_clr(struct auth_md_head *);
-int		 md_list_send(struct auth_md_head *, struct imsgev *);
+int		 md_list_send(struct auth_md_head *, struct imsgbuf *);
 
 /* database.c */
 int	 send_db_description(struct nbr *);
@@ -120,11 +120,11 @@ void	 recv_hello(struct iface *,  struct in_addr, u_int32_t,
 
 /* ospfe.c */
 pid_t		 ospfe(struct ospfd_conf *, int[2], int[2], int[2]);
-void		 ospfe_dispatch_main(int, short, void *);
-void		 ospfe_dispatch_rde(int, short, void *);
 int		 ospfe_imsg_compose_parent(int, pid_t, void *, u_int16_t);
 int		 ospfe_imsg_compose_rde(int, u_int32_t, pid_t, void *,
 		     u_int16_t);
+int		 ospfe_imsg_forward_parent(struct imsg *);
+int		 ospfe_imsg_forward_rde(struct imsg *);
 u_int32_t	 ospfe_router_id(void);
 void		 ospfe_fib_update(int);
 void		 ospfe_iface_ctl(struct ctl_conn *, unsigned int);

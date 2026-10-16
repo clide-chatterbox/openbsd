@@ -24,15 +24,14 @@
 #include <event.h>
 
 struct ctl_conn {
-	TAILQ_ENTRY(ctl_conn)	entry;
-	struct imsgev		iev;
+	TAILQ_ENTRY(ctl_conn)	 entry;
+	struct imsgbuf		*imsgbuf;
 };
 
 int	control_check(char *);
 int	control_init(char *);
 int	control_listen(int);
 void	control_accept(int, short, void *);
-void	control_dispatch_imsg(int, short, void *);
 int	control_imsg_relay(struct imsg *);
 void	control_cleanup(void);
 
