@@ -139,6 +139,9 @@ arguments of the types given in the following table are consumed
 and passed to the listed function, creating one
 .Vt ber_element
 per byte.
+.Fa ber
+can either be NULL or must point to a unlinked
+.Vt ber_element .
 The following bytes are valid:
 .Bl -column -offset indent byte ober_add_enumerated "struct ber_element *"
 .It Sy byte Ta Sy function Ta Sy arguments
@@ -191,8 +194,6 @@ without changing its position relative to other elements.
 A closing brace or parenthesis closes an open sequence or set,
 if any, such that the next element will be added behind rather
 than into the sequence or set.
-Only one sequence or set can be open at any time.
-Nesting is not supported without multiple function calls.
 .Sh RETURN VALUES
 Upon successful completion,
 these functions return a pointer to a populated
