@@ -1,4 +1,4 @@
-/* $OpenBSD: rpki-asn1.h,v 1.15 2026/11/12 13:41:40 tb Exp $ */
+/* $OpenBSD: rpki-asn1.h,v 1.16 2026/11/28 13:16:44 job Exp $ */
 /*
  * Copyright (c) 2025 Job Snijders <job@openbsd.org>
  * Copyright (c) 2025 Theo Buehler <tb@openbsd.org>
@@ -217,7 +217,6 @@ typedef struct {
 
 DECLARE_ASN1_FUNCTIONS(ContentInfo);
 
-
 /*
  * RPKI Manifest
  * reference: RFC 9286.
@@ -253,7 +252,6 @@ typedef struct {
 } Manifest;
 
 DECLARE_ASN1_FUNCTIONS(Manifest);
-
 
 /*
  * Route Origin Authorization (ROA)
@@ -301,7 +299,6 @@ typedef struct {
 } RouteOriginAttestation;
 
 DECLARE_ASN1_FUNCTIONS(RouteOriginAttestation);
-
 
 /*
  * RPKI Signed Checklist (RSC)
@@ -358,7 +355,6 @@ typedef struct {
 
 DECLARE_ASN1_FUNCTIONS(RpkiSignedChecklist);
 
-
 /*
  * Signed Prefix List (SPL)
  * reference: draft-ietf-sidrops-rpki-prefixlist
@@ -394,7 +390,6 @@ typedef struct {
 
 DECLARE_ASN1_FUNCTIONS(SignedPrefixList);
 
-
 /*
  * Trust Anchor Key (TAK)
  * reference: RFC 9691
@@ -424,6 +419,5 @@ typedef struct {
 } TAK;
 
 DECLARE_ASN1_FUNCTIONS(TAK);
-
 
 #endif /* ! RPKI_ASN1_H */
